@@ -1,0 +1,33 @@
+1989	Nacional
+1990	Boca Juniors
+1991	Olimpia
+1992	Colo-Colo
+1993	São Paulo
+1994	São Paulo
+1995	Independiente
+1996	Grêmio
+1997	Vélez Sarsfield
+1998	Cruzeiro
+2003	Olimpia
+2004	Cienciano
+2005	Boca Juniors
+2006	Boca Juniors
+2007	Internacional
+2008	Boca Juniors
+2009	LDU Quito
+2010	LDU Quito
+2011	Internacional
+2012	Santos
+2013	Corinthians
+2014	Atlético Mineiro
+2015	River Plate
+2016	River Plate
+2017	Atlético Nacional
+2018	Grêmio
+2019	River Plate
+2020	Flamengo
+2021	Defensa y Justicia
+2022	Palmeiras
+2023	Independiente del Valle
+2024	Fluminense
+2025	Racing Club

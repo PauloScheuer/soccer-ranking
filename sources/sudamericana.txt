@@ -1,0 +1,23 @@
+2002	San Lorenzo
+2003	Cienciano
+2004	Boca Juniors
+2005	Boca Juniors
+2006	Pachuca
+2007	Arsenal
+2008	Internacional
+2009	LDU Quito
+2010	Independiente
+2011	Universidad de Chile
+2012	São Paulo
+2013	Lanús
+2014	River Plate
+2015	Independiente Santa Fé
+2016	Chapecoense
+2017	Independiente
+2018	Athletico Paranaense
+2019	Independiente del Valle
+2020	Defensa y Justicia
+2021	Athletico Paranaense
+2022	Independiente del Valle
+2023	LDU Quito
+2024	Racing Club

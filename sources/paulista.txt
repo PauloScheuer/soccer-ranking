@@ -1,0 +1,136 @@
+1902	São Paulo Athletic
+1903	São Paulo Athletic
+1904	São Paulo Athletic
+1905	Paulistano
+1906	Germânia
+1907  S.C. Internacional
+1908	Paulistano
+1909	A.A. das Palmeiras
+1910	A.A. das Palmeiras
+1911	São Paulo Athletic
+1912	S.C. Americano
+1913	S.C. Americano
+1913	Paulistano
+1914	Corinthians
+1914	A.A. São Bento
+1915	A.A. das Palmeiras
+1915	Germânia
+1916	Paulistano
+1916	Corinthians
+1917	Paulistano
+1918	Paulistano
+1919	Paulistano
+1920	Palmeiras
+1921	Paulistano
+1922	Corinthians
+1923	Corinthians
+1924	Corinthians
+1925	A.A. São Bento
+1926	Paulistano
+1926	Palmeiras
+1927	Paulistano
+1927	Palmeiras
+1928	S.C. Internacional
+1928	Corinthians
+1929	Paulistano
+1929	Corinthians
+1930	Corinthians
+1931	São Paulo
+1932	Palmeiras
+1933	Palmeiras
+1933	Albion
+1934	Palmeiras
+1934	Fiorentino
+1935	Santos
+1935	Portuguesa
+1936	Palmeiras
+1936	Portuguesa
+1937	LFP	Corinthians
+1938	LFESP	Corinthians
+1939	LFESP	Corinthians
+1940	LFESP	Palmeiras
+1941	Corinthians
+1942	Palmeiras
+1943	São Paulo
+1944	Palmeiras
+1945	São Paulo
+1946	São Paulo
+1947	Palmeiras
+1948	São Paulo
+1949	São Paulo
+1950	Palmeiras
+1951	Corinthians
+1952	Corinthians
+1953	São Paulo
+1954	Corinthians
+1955	Santos
+1956	Santos
+1957	São Paulo
+1958	Santos
+1959	Palmeiras
+1960	Santos
+1961	Santos
+1962	Santos
+1963	Palmeiras
+1964	Santos
+1965	Santos
+1966	Palmeiras
+1967	Santos
+1968	Santos
+1969	Santos
+1970	São Paulo
+1971	São Paulo
+1972	Palmeiras
+1973	Santos
+1973  Portuguesa
+1974	Palmeiras
+1975	São Paulo
+1976	Palmeiras
+1977	Corinthians
+1978	Santos
+1979	Corinthians
+1980	São Paulo
+1981	São Paulo
+1982	Corinthians
+1983	Corinthians
+1984	Santos
+1985	São Paulo
+1986	Inter de Limeira
+1987	São Paulo
+1988	Corinthians
+1989	São Paulo
+1990	Bragantino
+1991	São Paulo
+1992	São Paulo
+1993	Palmeiras
+1994	Palmeiras
+1995	Corinthians
+1996	Palmeiras
+1997	Corinthians
+1998	São Paulo
+1999	Corinthians
+2000	São Paulo
+2001	Corinthians
+2002	Ituano
+2003	Corinthians
+2004	São Caetano
+2005	São Paulo
+2006	Santos
+2007	Santos
+2008	Palmeiras
+2009	Corinthians
+2010	Santos
+2011	Santos
+2012	Santos
+2013	Corinthians
+2014	Ituano
+2015	Santos
+2016	Santos
+2017	Corinthians
+2018	Corinthians
+2019	Corinthians
+2020	Palmeiras
+2021	São Paulo
+2022	Palmeiras
+2023	Palmeiras
+2024	Palmeiras 

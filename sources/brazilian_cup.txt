@@ -1,0 +1,36 @@
+1989	Grêmio
+1990	Flamengo
+1991	Criciúma
+1992	Internacional
+1993	Cruzeiro
+1994	Grêmio
+1995	Corinthians
+1996	Cruzeiro
+1997	Grêmio
+1998	Palmeiras
+1999	Juventude
+2000	Cruzeiro
+2001	Grêmio
+2002	Corinthians
+2003	Cruzeiro
+2004	Santo André
+2005	Paulista
+2006	Flamengo
+2007	Fluminense
+2008	Sport
+2009	Corinthians
+2010	Santos
+2011	Vasco da Gama
+2012	Palmeiras
+2013	Flamengo
+2014	Atlético Mineiro
+2015	Palmeiras
+2016	Grêmio
+2017	Cruzeiro
+2018	Cruzeiro
+2019	Athletico Paranaense
+2020	Palmeiras
+2021	Atlético Mineiro
+2022	Flamengo
+2023	São Paulo
+2024	Flamengo
