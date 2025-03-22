@@ -1,0 +1,112 @@
+1915	Atlético Mineiro
+1916	América
+1917	América
+1918	América
+1919	América
+1920	América
+1921	América
+1922	América
+1923	América
+1924	América
+1925	América
+1926	Atlético Mineiro
+1927	Atlético Mineiro
+1928	Cruzeiro
+1929	Cruzeiro
+1930	Cruzeiro
+1931	Atlético Mineiro
+1932	Atlético Mineiro
+1932	Villa Nova
+1933	Villa Nova
+1934	Villa Nova
+1935	Villa Nova
+1936	Atlético Mineiro
+1937	Siderúrgica
+1938	Atlético Mineiro
+1939	Atlético Mineiro
+1940	Cruzeiro
+1941	Atlético Mineiro
+1942	Atlético Mineiro
+1943	Cruzeiro
+1944	Cruzeiro
+1945	Cruzeiro
+1946	Atlético Mineiro
+1947	Atlético Mineiro
+1948	América
+1949	Atlético Mineiro
+1950	Atlético Mineiro
+1951	Villa Nova
+1952	Atlético Mineiro
+1953	Atlético Mineiro
+1954	Atlético Mineiro
+1955	Atlético Mineiro
+1956	Atlético Mineiro
+1956	Cruzeiro
+1957	América
+1958	Atlético Mineiro
+1959	Cruzeiro
+1960	Cruzeiro
+1961	Cruzeiro
+1962	Atlético Mineiro
+1963	Atlético Mineiro
+1964	Siderúrgica
+1965	Cruzeiro
+1966	Cruzeiro
+1967	Cruzeiro
+1968	Cruzeiro
+1969	Cruzeiro
+1970	Atlético Mineiro
+1971	América
+1972	Cruzeiro
+1973	Cruzeiro
+1974	Cruzeiro
+1975	Cruzeiro
+1976	Atlético Mineiro
+1977	Cruzeiro
+1978	Atlético Mineiro
+1979	Atlético Mineiro
+1980	Atlético Mineiro
+1981	Atlético Mineiro
+1982	Atlético Mineiro
+1983	Atlético Mineiro
+1984	Cruzeiro
+1985	Atlético Mineiro
+1986	Atlético Mineiro
+1987	Cruzeiro
+1988	Atlético Mineiro
+1989	Atlético Mineiro
+1990	Cruzeiro
+1991	Atlético Mineiro
+1992	Cruzeiro
+1993	América
+1994	Cruzeiro
+1995	Atlético Mineiro
+1996	Cruzeiro
+1997	Cruzeiro
+1998	Cruzeiro
+1999	Atlético Mineiro
+2000	Atlético Mineiro
+2001	América
+2002	Caldense
+2003	Cruzeiro
+2004	Cruzeiro
+2005	Ipatinga
+2006	Cruzeiro
+2007	Atlético Mineiro
+2008	Cruzeiro
+2009	Cruzeiro
+2010	Atlético Mineiro
+2011	Cruzeiro
+2012	Atlético Mineiro
+2013	Atlético Mineiro
+2014	Cruzeiro
+2015	Atlético Mineiro
+2016	América
+2017	Atlético Mineiro
+2018	Cruzeiro
+2019	Cruzeiro
+2020	Atlético Mineiro
+2021	Atlético Mineiro
+2022	Atlético Mineiro
+2023	Atlético Mineiro
+2024	Atlético Mineiro

@@ -14,10 +14,8 @@
 1972	Ajax
 1973	Independiente
 1974	Atlético de Madrid
-1975	Não houve disputa
 1976	Bayern de Munique
 1977	Boca Juniors
-1978	Não houve disputa
 1979	Olimpia
 1980	Nacional
 1981	Flamengo

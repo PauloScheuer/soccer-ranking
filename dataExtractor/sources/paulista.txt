@@ -3,7 +3,7 @@
 1904	São Paulo Athletic
 1905	Paulistano
 1906	Germânia
-1907  S.C. Internacional
+1907	S.C. Internacional
 1908	Paulistano
 1909	A.A. das Palmeiras
 1910	A.A. das Palmeiras
@@ -82,7 +82,7 @@
 1971	São Paulo
 1972	Palmeiras
 1973	Santos
-1973  Portuguesa
+1973	Portuguesa
 1974	Palmeiras
 1975	São Paulo
 1976	Palmeiras

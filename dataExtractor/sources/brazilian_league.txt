@@ -1,4 +1,4 @@
-1937  Atlético Mineiro
+1937	Atlético Mineiro
 1959	Bahia
 1960	Palmeiras
 1961	Santos
