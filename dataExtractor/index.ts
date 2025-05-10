@@ -7,7 +7,7 @@ type Championship = {
   level: Level;
 };
 
-type Titles = Map<number, Set<ChampionshipID>>;
+type Titles = Record<number, ChampionshipID[]>;
 
 enum ChampionshipID {
   Gaucho,
@@ -23,7 +23,7 @@ enum ChampionshipID {
   WorldCup,
 }
 
-enum TeamID {
+export enum TeamID {
   Gremio,
   Internacional,
   AtleticoMG,
@@ -122,16 +122,15 @@ const teamsIdMap = new Map([
   ["Flamengo", TeamID.Flamengo],
   ["Fluminense", TeamID.Fluminense],
   ["Botafogo", TeamID.Botafogo],
-  ["Vasco", TeamID.Vasco],
+  ["Vasco da Gama", TeamID.Vasco],
   ["São Paulo", TeamID.SaoPaulo],
   ["Palmeiras", TeamID.Palmeiras],
   ["Corinthians", TeamID.Corinthians],
   ["Santos", TeamID.Santos],
 ]);
 
-const teams = new Map<TeamID, Titles>();
+const teams: Record<number, Titles> = {};
 
-console.log("here");
 championships.forEach((championship) => {
   const data = fs.readFileSync("sources/" + championship.file, "utf-8");
   const lines = data.split("\r\n");
@@ -146,14 +145,14 @@ championships.forEach((championship) => {
       return;
     }
 
-    const titles: Titles = teams.get(teamId) ?? new Map();
-    const yearTitles = titles.get(Number(year)) ?? new Set();
+    const titles: Titles = teams[teamId] ?? {};
+    const yearTitles = titles[Number(year)] ?? [];
 
-    yearTitles.add(championship.id);
+    yearTitles.push(championship.id);
 
-    titles.set(Number(year), yearTitles);
-    teams.set(teamId, titles);
+    titles[Number(year)] = yearTitles;
+    teams[teamId] = titles;
   });
 });
 
-console.log(teams.get(TeamID.AtleticoMG));
+fs.writeFileSync("data.json", JSON.stringify(teams));
