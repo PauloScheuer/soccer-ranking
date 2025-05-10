@@ -9,8 +9,8 @@
           :class="actionsDisabled && 'disabled'" @change="handleYearRangeChange" />
       </div>
       <div class="config-field">
-        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Consultar
-        </span>
+        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Criar</span>
+        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animar</span>
         <template v-if="animating">
           <span class="config-button" @click="animationStep(-1)" :class="(animationRunning || !canStep) && 'disabled'">
             <VueFeather type="skip-back" size="16" />
@@ -40,9 +40,9 @@ import DoubleRangeInput from './DoubleRangeInput.vue';
 import { computed, onMounted, ref } from 'vue';
 import VueFeather from 'vue-feather';
 import data from '../../dataExtractor/data.json';
-import { teamIdToName } from '../utils';
+import { teamIdToColor, teamIdToName } from '../utils';
 
-const minYear = 1900;
+const minYear = 1906;
 const maxYear = 2024;
 
 const chartWidth = ref(0);
@@ -57,12 +57,11 @@ const config = ref({
 
 const curYear = ref(maxYear);
 
-const loading = ref(false);
 const animating = ref(false);
 const animationRunning = ref(false);
 
 const actionsDisabled = computed(() => {
-  return loading.value || animating.value;
+  return animating.value;
 })
 
 
@@ -72,7 +71,7 @@ type RankingItem = { _id: string, pos: number, total: number }
 
 const rankingItems = ref<TeamsTitles>({});
 
-let drawStates = new Map<string, { pos: number, appearances: number }>();
+let drawStates = new Map<string, { pos: number, size: number }>();
 
 async function handleYearRangeChange(low: number, high: number) {
   if (actionsDisabled.value) {
@@ -82,7 +81,8 @@ async function handleYearRangeChange(low: number, high: number) {
   config.value.start = low;
   config.value.end = high;
 }
-function fetchCompleteRanking() {
+
+function computeData() {
   drawStates.clear();
   const raw = data;
   const acc: TeamsTitles = {};
@@ -112,13 +112,16 @@ function resizeCanvas() {
 
 onMounted(() => {
   resizeCanvas();
+  computeData();
+  draw(curYear.value)
   window.addEventListener('resize', () => {
-    resizeCanvas();
-    redraw();
+    resizeCanvas()
+    draw(curYear.value)
   });
 });
 
-const N_MAX_NAME_WIDTH = 220;
+const N_MAX_NAME_WIDTH = 120;
+const N_QTY_ENTITIES = 12;
 
 async function draw(year: number) {
   const ctx = rankingCanvas.value?.getContext('2d');
@@ -126,15 +129,16 @@ async function draw(year: number) {
     return;
   }
 
+  ctx.save();
+
   const width = chartWidth.value;
   const height = chartHeight.value;
   const items: { _id: string, pos: number, total: number }[] = Object.entries(rankingItems.value).map(([team, titles]) => {
     return { _id: team, pos: year, total: titles[year] ?? 0 }
   }).sort((a, b) => b.total - a.total);
 
-  ctx.font = '12px sans-serif';
   const maxNameWidth = N_MAX_NAME_WIDTH;
-  const maxAppearances = Math.max(...items.map(item => item.total));
+  const maxTotal = Math.max(...items.map(item => item.total));
 
   const countSteps = 20;
   const steps = new Array(countSteps).fill(0).map((_, i) => i + 1);
@@ -145,53 +149,56 @@ async function draw(year: number) {
     items.forEach(async (item, i) => {
       const lastState = drawStates.get(item._id);
       const lastPos = lastState?.pos ?? 21;
-      const lastAppearances = lastState?.appearances ?? 0
+      const lastSize = lastState?.size ?? 0
 
       const diffPos = lastPos - i;
       const stepIndex = lastPos - diffPos * step / countSteps;
 
-      const diffAppearances = lastAppearances - item.total;
-      const stepAppearances = lastAppearances - diffAppearances * step / countSteps;
-      drawElementAtPos(ctx, item, stepIndex, stepAppearances, maxNameWidth, maxAppearances);
+      const curSize = item.total / maxTotal;
+      const diffSize = lastSize - curSize;
+      const stepSize = lastSize - diffSize * step / countSteps;
+      drawElementAtPos(ctx, item, stepIndex, stepSize, maxNameWidth, maxTotal);
     });
 
     await new Promise(res => setTimeout(res, 16));
   }
 
+  ctx.restore()
+
   drawStates.clear();
   items.forEach((item, i) => {
-    drawStates.set(item._id, { pos: i, appearances: item.total });
+    drawStates.set(item._id, { pos: i, size: item.total / maxTotal });
   })
 }
 
-function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, appearances: number, maxNameWidth: number, maxAppearances: number) {
+function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxNameWidth: number, maxTotal: number) {
   const padding = 4;
-  const qtySpace = 20;
-  const personHeight = chartHeight.value / 20;
+  const personHeight = chartHeight.value / N_QTY_ENTITIES;
   const width = chartWidth.value;
 
   const label = `${Math.round(i + 1)}º - ${(teamIdToName(Number(item._id)))}`
+  ctx.font = '12px sans-serif';
   const nameWidth = ctx.measureText(label).width;
   ctx.fillStyle = '#000';
   const textY = personHeight * (i + 0.5) + 12 / 2;
   ctx.fillText(label, maxNameWidth - nameWidth, textY, maxNameWidth);
 
-  const maxWidth = width - maxNameWidth - qtySpace - padding;
-  const fixedWidth = maxWidth * (appearances / maxAppearances);
-  ctx.fillStyle = 'red';
+  const maxWidth = width - maxNameWidth - 20 - padding;
+  const fixedWidth = maxWidth * total;
+  ctx.fillStyle = teamIdToColor(item._id);
   ctx.beginPath();
   ctx.roundRect(maxNameWidth + padding, personHeight * i + padding, fixedWidth, personHeight - padding * 2, 5);
   ctx.fill();
   ctx.closePath();
 
-  ctx.fillText(`${Math.round(appearances)}`, maxNameWidth + padding * 2 + fixedWidth, textY);
+  ctx.fillText(`${Math.round(total * maxTotal)}`, maxNameWidth + padding * 2 + fixedWidth, textY);
 }
 
-const curAnimationIndex = ref(0);
+const curAnimationYear = ref(config.value.start);
 const canStep = ref(true);
 
 async function canRunAnimation() {
-  const originalIndex = curAnimationIndex.value;
+  const originalYear = curAnimationYear.value;
   let interval = 0;
 
   canStep.value = true;
@@ -200,11 +207,11 @@ async function canRunAnimation() {
       if (!animating.value) {
         return res(-1);
       }
-      if (originalIndex !== curAnimationIndex.value) {
-        return res(curAnimationIndex.value)
+      if (originalYear !== curAnimationYear.value) {
+        return res(curAnimationYear.value)
       }
       if (animationRunning.value) {
-        res(originalIndex + 1)
+        res(originalYear + 1)
       }
     }, 16)
   })
@@ -220,29 +227,36 @@ function animationStep(value: number) {
     return;
   }
 
-  const newIndex = curAnimationIndex.value + value;
-  curAnimationIndex.value = Math.max(newIndex, 0);
+  const newIndex = curAnimationYear.value + value;
+  curAnimationYear.value = Math.max(newIndex, 0);
 }
 
 async function animationLoop() {
-  curAnimationIndex.value = -1;
+  curAnimationYear.value = config.value.start;
+  while (curAnimationYear.value < config.value.end) {
+    curYear.value = curAnimationYear.value;
+    curAnimationYear.value = await canRunAnimation();
 
-  for (let i = config.value.start; i <= config.value.end; i++) {
-    curYear.value = i;
-    curAnimationIndex.value = await canRunAnimation();
+    if (!animating.value) {
+      create()
+      break;
+    }
 
-    draw(i);
+    draw(curAnimationYear.value);
 
     await new Promise(res => setTimeout(res, 1000));
   }
 }
 
-async function animate() {
-  if (loading.value) {
-    return;
-  }
+function create() {
+  computeData();
+  curYear.value = config.value.end;
+  draw(curYear.value)
+}
 
-  fetchCompleteRanking();
+async function animate() {
+  computeData();
+
   animating.value = true;
   animationRunning.value = true;
   await animationLoop();
@@ -252,10 +266,6 @@ async function animate() {
 
 async function stopAnimation() {
   animating.value = false;
-}
-
-function redraw() {
-  // requestAnimationFrame(() => draw());
 }
 
 let curHovered = -1;
@@ -268,7 +278,7 @@ function handleMouseMove(event: MouseEvent) {
 
   const y = event.offsetY;
 
-  curHovered = Math.floor((y / chartHeight.value) * 20);
+  curHovered = Math.floor((y / chartHeight.value) * N_QTY_ENTITIES);
 }
 
 </script>
@@ -341,7 +351,7 @@ function handleMouseMove(event: MouseEvent) {
 
 .ranking-canvas {
   width: 100%;
-  height: 800px;
+  height: 480px;
   cursor: pointer;
 }
 
