@@ -76,7 +76,7 @@ function handleHigh(e: Event) {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -7px;
-  background-color: blue;
+  background-color: #6B3FA0;
   height: 10px;
   width: 10px;
   border-radius: 50%;
@@ -85,7 +85,7 @@ function handleHigh(e: Event) {
 .input-container {
   padding: 8px;
   border-radius: 5px;
-  background-color: gray;
+  background-color: white;
   font-size: 8;
   display: flex;
   align-items: center;

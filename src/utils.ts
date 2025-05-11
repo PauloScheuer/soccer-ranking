@@ -22,15 +22,15 @@ export function teamIdToName(id: number | string) {
 export const teamsColorMap = new Map([
   [TeamID.Gremio, "#00BFFF"],
   [TeamID.Internacional, "#FF0000"],
-  [TeamID.AtleticoMG, "#000000"],
+  [TeamID.AtleticoMG, "#C9B037"],
   [TeamID.Cruzeiro, "#0033A0"],
   [TeamID.Flamengo, "#C8102E"],
   [TeamID.Fluminense, "#640A0A"],
-  [TeamID.Botafogo, "#000000"],
-  [TeamID.Vasco, "#000000"],
+  [TeamID.Botafogo, "#A9A9A9"],
+  [TeamID.Vasco, "#B22222"],
   [TeamID.SaoPaulo, "#FF0000"],
   [TeamID.Palmeiras, "#1E7F3B"],
-  [TeamID.Corinthians, "#000000"],
+  [TeamID.Corinthians, "#D7B56D"],
   [TeamID.Santos, "#000000"],
 ]);
 

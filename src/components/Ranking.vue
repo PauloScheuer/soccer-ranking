@@ -1,16 +1,27 @@
 <template #content>
-  <h1 class="ranking-title">Ranking</h1>
-  <h2 class="ranking-subtitle">Visualize os times com mais títulos, por intervalo de anos</h2>
   <div class="ranking-content">
+    <h1 class="ranking-title ranking-text">Brazilian Big 12 Ranking</h1>
+    <h2 class="ranking-subtitle ranking-text">Check the biggest Brazilian clubs, ranked by titles. By default, all
+      titles have the same weight, but you can customize it, as well as select which clubs to compare and the interval
+      of years.</h2>
     <div class="ranking-config">
       <div class="config-field">
-        <span class="config-label">Anos considerados:</span>
+        <span class="config-label">Considered years:</span>
         <DoubleRangeInput :min="minYear" :max="maxYear" :disabled="actionsDisabled"
           :class="actionsDisabled && 'disabled'" @change="handleYearRangeChange" />
       </div>
       <div class="config-field">
-        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Criar</span>
-        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animar</span>
+        <span class="config-label">Considered clubs:</span>
+        <span v-for="team in config.clubs" class="config-button" :class="!team.consider && 'unconsider'"
+          @click="team.consider = !team.consider">{{
+            teamIdToName(team.id) }}</span>
+        <span class="config-button" @click="config.clubs.forEach(item => item.consider = true)">Consider all</span>
+        <span class="config-button" @click="config.clubs.forEach(item => item.consider = false)">Unconsider all</span>
+      </div>
+      <div class="config-field">
+        <span class="config-label">Actions:</span>
+        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</span>
+        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</span>
         <template v-if="animating">
           <span class="config-button" @click="animationStep(-1)" :class="(animationRunning || !canStep) && 'disabled'">
             <VueFeather type="skip-back" size="16" />
@@ -41,6 +52,7 @@ import { computed, onMounted, ref } from 'vue';
 import VueFeather from 'vue-feather';
 import data from '../../dataExtractor/data.json';
 import { teamIdToColor, teamIdToName } from '../utils';
+import { TeamID } from '../types';
 
 const minYear = 1906;
 const maxYear = 2024;
@@ -52,7 +64,21 @@ const rankingCanvas = ref(null as HTMLCanvasElement | null);
 
 const config = ref({
   start: minYear,
-  end: maxYear
+  end: maxYear,
+  clubs: [
+    { id: TeamID.Gremio, consider: true },
+    { id: TeamID.Internacional, consider: true },
+    { id: TeamID.AtleticoMG, consider: true },
+    { id: TeamID.Cruzeiro, consider: true },
+    { id: TeamID.Flamengo, consider: true },
+    { id: TeamID.Fluminense, consider: true },
+    { id: TeamID.Botafogo, consider: true },
+    { id: TeamID.Vasco, consider: true },
+    { id: TeamID.SaoPaulo, consider: true },
+    { id: TeamID.Palmeiras, consider: true },
+    { id: TeamID.Corinthians, consider: true },
+    { id: TeamID.Santos, consider: true },
+  ]
 });
 
 const curYear = ref(maxYear);
@@ -87,6 +113,11 @@ function computeData() {
   const raw = data;
   const acc: TeamsTitles = {};
   Object.entries(raw).forEach(([team, titles]: [string, { [key: string]: number[] }]) => {
+    const shouldConsider = config.value.clubs.find(el => el.id === Number(team))?.consider;
+    if (!shouldConsider) {
+      return;
+    }
+
     const accTitles: [string, number][] = [];
     for (let year = config.value.start; year <= config.value.end; year++) {
       const pastTitles = accTitles.at(-1)?.[1] ?? 0;
@@ -105,8 +136,11 @@ function computeData() {
 function resizeCanvas() {
   if (rankingCanvas.value) {
     const sizes = rankingCanvas.value.getBoundingClientRect();
-    chartWidth.value = sizes.width;
-    chartHeight.value = sizes.height;
+    chartWidth.value = sizes.width * devicePixelRatio;
+    chartHeight.value = sizes.height * devicePixelRatio;
+
+    const ctx = rankingCanvas.value?.getContext('2d');
+    ctx?.scale(devicePixelRatio, devicePixelRatio);
   }
 }
 
@@ -120,7 +154,6 @@ onMounted(() => {
   });
 });
 
-const N_MAX_NAME_WIDTH = 120;
 const N_QTY_ENTITIES = 12;
 
 async function draw(year: number) {
@@ -133,17 +166,17 @@ async function draw(year: number) {
 
   const width = chartWidth.value;
   const height = chartHeight.value;
+
   const items: { _id: string, pos: number, total: number }[] = Object.entries(rankingItems.value).map(([team, titles]) => {
     return { _id: team, pos: year, total: titles[year] ?? 0 }
   }).sort((a, b) => b.total - a.total);
 
-  const maxNameWidth = N_MAX_NAME_WIDTH;
   const maxTotal = Math.max(...items.map(item => item.total));
 
   const countSteps = 20;
   const steps = new Array(countSteps).fill(0).map((_, i) => i + 1);
   for await (const step of steps) {
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#f3ece6';
     ctx.fillRect(0, 0, width, height);
 
     items.forEach(async (item, i) => {
@@ -157,7 +190,7 @@ async function draw(year: number) {
       const curSize = item.total / maxTotal;
       const diffSize = lastSize - curSize;
       const stepSize = lastSize - diffSize * step / countSteps;
-      drawElementAtPos(ctx, item, stepIndex, stepSize, maxNameWidth, maxTotal);
+      drawElementAtPos(ctx, item, stepIndex, stepSize, maxTotal);
     });
 
     await new Promise(res => setTimeout(res, 16));
@@ -171,27 +204,35 @@ async function draw(year: number) {
   })
 }
 
-function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxNameWidth: number, maxTotal: number) {
-  const padding = 4;
+function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxTotal: number) {
+  const paddingY = 4;
+  const paddingX = 10;
   const personHeight = chartHeight.value / N_QTY_ENTITIES;
   const width = chartWidth.value;
 
-  const label = `${Math.round(i + 1)}º - ${(teamIdToName(Number(item._id)))}`
-  ctx.font = '12px sans-serif';
+  const label = `${(teamIdToName(Number(item._id)))}`;
+
+  //draw identifier
+  const maxNameWidth = 140;
+
+  ctx.font = '16px "Source Sans 3"';
+  ctx.textBaseline = 'middle'
   const nameWidth = ctx.measureText(label).width;
   ctx.fillStyle = '#000';
-  const textY = personHeight * (i + 0.5) + 12 / 2;
+  const textY = personHeight * (i + 0.5);
   ctx.fillText(label, maxNameWidth - nameWidth, textY, maxNameWidth);
 
-  const maxWidth = width - maxNameWidth - 20 - padding;
+  //draw bar
+  const maxWidth = width - maxNameWidth - 20 - paddingX * 4;
   const fixedWidth = maxWidth * total;
   ctx.fillStyle = teamIdToColor(item._id);
   ctx.beginPath();
-  ctx.roundRect(maxNameWidth + padding, personHeight * i + padding, fixedWidth, personHeight - padding * 2, 5);
+  ctx.roundRect(maxNameWidth + paddingX, personHeight * i + paddingY, fixedWidth, personHeight - paddingY * 2, 5);
   ctx.fill();
   ctx.closePath();
 
-  ctx.fillText(`${Math.round(total * maxTotal)}`, maxNameWidth + padding * 2 + fixedWidth, textY);
+  //draw total
+  ctx.fillText(`${Math.round(total * maxTotal)}`, maxNameWidth + paddingX * 2 + fixedWidth, textY);
 }
 
 const curAnimationYear = ref(config.value.start);
@@ -234,8 +275,8 @@ function animationStep(value: number) {
 async function animationLoop() {
   curAnimationYear.value = config.value.start;
   while (curAnimationYear.value < config.value.end) {
-    curYear.value = curAnimationYear.value;
     curAnimationYear.value = await canRunAnimation();
+    curYear.value = curAnimationYear.value;
 
     if (!animating.value) {
       create()
@@ -287,50 +328,52 @@ function handleMouseMove(event: MouseEvent) {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background-color: #f3ece6;
+  padding: 20px;
 }
 
 .ranking-container {
   height: fit-content;
   border-radius: 8px;
-  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background-color: white;
-  padding: 20px;
 }
 
 .ranking-config {
   border-radius: 8px;
-  box-shadow: var(--shadow);
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ranking-text {
   background-color: white;
-  padding: 20px;
+  padding: 8px;
+  border-radius: 5px;
 }
 
 .ranking-title {
-  color: var(--primary-color);
-  font-size: var(--font-size-title);
   font-weight: bold;
-  margin-bottom: 4px;
+  width: fit-content;
 }
 
 .ranking-subtitle {
-  color: var(--dark-color);
-  font-size: var(--font-size-subtitle);
-  margin-bottom: 16px;
+  width: fit-content;
 }
 
 .config-field {
   display: flex;
   gap: 10px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
+  background-color: white;
+  padding: 8px;
+  border-radius: 5px;
 }
 
 .config-label {}
@@ -339,10 +382,11 @@ function handleMouseMove(event: MouseEvent) {
   display: flex;
   align-items: center;
   gap: 4px;
-  background-color: var(--grey-color);
   padding: 8px;
   border-radius: 5px;
   cursor: pointer;
+  background-color: #6B3FA0;
+  color: white;
 }
 
 .filter-title {
@@ -351,12 +395,16 @@ function handleMouseMove(event: MouseEvent) {
 
 .ranking-canvas {
   width: 100%;
-  height: 480px;
+  height: 600px;
   cursor: pointer;
 }
 
 .disabled {
   opacity: 0.6;
   cursor: auto;
+}
+
+.unconsider {
+  opacity: 0.2;
 }
 </style>
