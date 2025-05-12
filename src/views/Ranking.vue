@@ -2,7 +2,7 @@
   <div class="ranking-content">
     <h1 class="ranking-title ranking-text">Brazilian Big 12 Ranking</h1>
     <h2 class="ranking-subtitle ranking-text">Check the biggest Brazilian clubs, ranked by titles. You can customize
-      which clubs are considered, the interval of years and the weight for each championsip.</h2>
+      which clubs are considered, the interval of years and the weight for each championship.</h2>
     <Collapsable :isOpen="isConfigOpen">
       <template #header>
         <div class="config-header">
