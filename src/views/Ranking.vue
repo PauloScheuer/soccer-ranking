@@ -61,8 +61,7 @@
     </Collapsable>
     <div class="ranking-container">
       <span>{{ config.start }} - {{ curYear }}</span>
-      <canvas ref="rankingCanvas" class="ranking-canvas" :width="chartWidth" :height="chartHeight"
-        @mousemove="handleMouseMove">
+      <canvas ref="rankingCanvas" class="ranking-canvas" :width="chartWidth" :height="chartHeight">
       </canvas>
     </div>
   </div>
@@ -349,19 +348,6 @@ async function stopAnimation() {
   animating.value = false;
 }
 
-let curHovered = -1;
-
-function handleMouseMove(event: MouseEvent) {
-  if (animating.value) {
-    curHovered = -1;
-    return;
-  }
-
-  const y = event.offsetY;
-
-  curHovered = Math.floor((y / chartHeight.value) * N_QTY_ENTITIES);
-}
-
 </script>
 <style scoped>
 .ranking-content {
@@ -464,7 +450,6 @@ function handleMouseMove(event: MouseEvent) {
 .ranking-canvas {
   width: 100%;
   height: 600px;
-  cursor: pointer;
 }
 
 .disabled {
