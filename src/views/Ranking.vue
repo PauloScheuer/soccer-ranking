@@ -1,43 +1,64 @@
 <template #content>
   <div class="ranking-content">
     <h1 class="ranking-title ranking-text">Brazilian Big 12 Ranking</h1>
-    <h2 class="ranking-subtitle ranking-text">Check the biggest Brazilian clubs, ranked by titles. By default, all
-      titles have the same weight, but you can customize it, as well as select which clubs to compare and the interval
-      of years.</h2>
-    <div class="ranking-config">
-      <div class="config-field">
-        <span class="config-label">Considered years:</span>
-        <DoubleRangeInput :min="minYear" :max="maxYear" :disabled="actionsDisabled"
-          :class="actionsDisabled && 'disabled'" @change="handleYearRangeChange" />
-      </div>
-      <div class="config-field">
-        <span class="config-label">Considered clubs:</span>
-        <span v-for="team in config.clubs" class="config-button" :class="!team.consider && 'unconsider'"
-          @click="team.consider = !team.consider">{{
-            teamIdToName(team.id) }}</span>
-        <span class="config-button" @click="config.clubs.forEach(item => item.consider = true)">Consider all</span>
-        <span class="config-button" @click="config.clubs.forEach(item => item.consider = false)">Unconsider all</span>
-      </div>
-      <div class="config-field">
-        <span class="config-label">Actions:</span>
-        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</span>
-        <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</span>
-        <template v-if="animating">
-          <span class="config-button" @click="animationStep(-1)" :class="(animationRunning || !canStep) && 'disabled'">
-            <VueFeather type="skip-back" size="16" />
-          </span>
-          <span class="config-button" @click="stopAnimation()">
-            <VueFeather type="stop-circle" size="16" />
-          </span>
-          <span class="config-button" @click="animationRunning = !animationRunning">
-            <VueFeather :type="animationRunning ? 'pause-circle' : 'play-circle'" size="16" />
-          </span>
-          <span class="config-button" @click="animationStep(1)" :class="(animationRunning || !canStep) && 'disabled'">
-            <VueFeather type="skip-forward" size="16" />
-          </span>
-        </template>
-      </div>
-    </div>
+    <h2 class="ranking-subtitle ranking-text">Check the biggest Brazilian clubs, ranked by titles. You can customize
+      which clubs are considered, the interval of years and the weight for each championsip.</h2>
+    <Collapsable :isOpen="isConfigOpen">
+      <template #header>
+        <div class="config-header">
+          <span class="config-title">Settings</span>
+          <vue-feather type="settings" size="16" class="config-icon" @click="isConfigOpen = !isConfigOpen" />
+        </div>
+      </template>
+      <template #content>
+        <div class="ranking-config">
+          <div class="config-field">
+            <span class="config-label">Considered years:</span>
+            <DoubleRangeInput :min="minYear" :max="maxYear" :disabled="actionsDisabled"
+              :class="actionsDisabled && 'disabled'" @change="handleYearRangeChange" />
+          </div>
+          <div class="config-field">
+            <span class="config-label">Considered clubs:</span>
+            <span v-for="team in config.clubs" class="config-button" :class="!team.consider && 'unconsider'"
+              @click="team.consider = !team.consider">{{
+                teamIdToName(team.id) }}</span>
+            <span class="config-button" @click="config.clubs.forEach(item => item.consider = true)">Consider all</span>
+            <span class="config-button" @click="config.clubs.forEach(item => item.consider = false)">Unconsider
+              all</span>
+          </div>
+          <div class="config-field">
+            <span class="config-label">Championship weights:</span>
+            <div v-for="championship in config.championships" class="weight-field">
+              <span>{{
+                championshipIdToName(championship.id) }}:</span>
+              <input type="number" min="0" v-model="championship.weight" class="weight-input" />
+            </div>
+            <span class="config-button" @click="config.championships.forEach(item => item.weight = 1)">Reset all</span>
+          </div>
+          <div class="config-field">
+            <span class="config-label">Actions:</span>
+            <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</span>
+            <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</span>
+            <template v-if="animating">
+              <span class="config-button" @click="animationStep(-1)"
+                :class="(animationRunning || !canStep) && 'disabled'">
+                <VueFeather type="skip-back" size="16" />
+              </span>
+              <span class="config-button" @click="stopAnimation()">
+                <VueFeather type="stop-circle" size="16" />
+              </span>
+              <span class="config-button" @click="animationRunning = !animationRunning">
+                <VueFeather :type="animationRunning ? 'pause-circle' : 'play-circle'" size="16" />
+              </span>
+              <span class="config-button" @click="animationStep(1)"
+                :class="(animationRunning || !canStep) && 'disabled'">
+                <VueFeather type="skip-forward" size="16" />
+              </span>
+            </template>
+          </div>
+        </div>
+      </template>
+    </Collapsable>
     <div class="ranking-container">
       <span>{{ config.start }} - {{ curYear }}</span>
       <canvas ref="rankingCanvas" class="ranking-canvas" :width="chartWidth" :height="chartHeight"
@@ -47,12 +68,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import DoubleRangeInput from './DoubleRangeInput.vue';
+import DoubleRangeInput from '../components/DoubleRangeInput.vue';
 import { computed, onMounted, ref } from 'vue';
 import VueFeather from 'vue-feather';
 import data from '../../dataExtractor/data.json';
-import { teamIdToColor, teamIdToName } from '../utils';
-import { TeamID } from '../types';
+import { championshipIdToName, teamIdToColor, teamIdToName } from '../utils';
+import { ChampionshipID, TeamID } from '../types';
+import Collapsable from '../components/Collapsable.vue';
 
 const minYear = 1906;
 const maxYear = 2024;
@@ -78,8 +100,23 @@ const config = ref({
     { id: TeamID.Palmeiras, consider: true },
     { id: TeamID.Corinthians, consider: true },
     { id: TeamID.Santos, consider: true },
+  ],
+  championships: [
+    { id: ChampionshipID.Gaucho, weight: 1 },
+    { id: ChampionshipID.Carioca, weight: 1 },
+    { id: ChampionshipID.Mineiro, weight: 1 },
+    { id: ChampionshipID.Paulista, weight: 1 },
+    { id: ChampionshipID.BrazilianCup, weight: 1 },
+    { id: ChampionshipID.BrazilianLeague, weight: 1 },
+    { id: ChampionshipID.BrazilianSuperCup, weight: 1 },
+    { id: ChampionshipID.Sudamericana, weight: 1 },
+    { id: ChampionshipID.Libertadores, weight: 1 },
+    { id: ChampionshipID.Recopa, weight: 1 },
+    { id: ChampionshipID.WorldCup, weight: 1 },
   ]
 });
+
+const isConfigOpen = ref(false);
 
 const curYear = ref(maxYear);
 
@@ -121,7 +158,10 @@ function computeData() {
     const accTitles: [string, number][] = [];
     for (let year = config.value.start; year <= config.value.end; year++) {
       const pastTitles = accTitles.at(-1)?.[1] ?? 0;
-      const curTitles = titles[year]?.length ?? 0;
+      const curTitles = titles[year]?.reduce((acc, cur) => {
+        const weight = config.value.championships.find(el => el.id === cur)?.weight ?? 1;
+        return acc + weight;
+      }, 0) ?? 0;
       const total = curTitles + pastTitles;
       accTitles.push([String(year), total])
     }
@@ -348,6 +388,8 @@ function handleMouseMove(event: MouseEvent) {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  background-color: white;
+  padding: 10px;
 }
 
 .ranking-text {
@@ -374,6 +416,32 @@ function handleMouseMove(event: MouseEvent) {
   background-color: white;
   padding: 8px;
   border-radius: 5px;
+}
+
+.weight-field {
+  display: flex;
+  gap: 10px;
+  border-radius: 5px;
+  padding: 4px 8px;
+  align-items: center;
+  background-color: #6B3FA0;
+  color: white;
+}
+
+.weight-input {
+  all: unset;
+  width: 60px;
+  font: inherit;
+  /* Inherit font from parent */
+  color: black;
+  background: none;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  padding: 4px;
+  border-radius: 5px;
+  text-align: center;
 }
 
 .config-label {}
@@ -406,5 +474,19 @@ function handleMouseMove(event: MouseEvent) {
 
 .unconsider {
   opacity: 0.2;
+}
+
+.config-header {
+  background-color: white;
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.config-icon {
+  cursor: pointer;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Ranking from './components/Ranking.vue'
+import Ranking from './views/Ranking.vue'
 </script>
 
 <template>

@@ -1,6 +1,6 @@
-import { TeamID } from "./types";
+import { TeamID, ChampionshipID } from "./types";
 
-export const teamsNameMap = new Map([
+const teamsNameMap = new Map([
   [TeamID.Gremio, "Grêmio"],
   [TeamID.Internacional, "Internacional"],
   [TeamID.AtleticoMG, "Atlético Mineiro"],
@@ -19,7 +19,7 @@ export function teamIdToName(id: number | string) {
   return teamsNameMap.get(Number(id)) ?? "Unknown";
 }
 
-export const teamsColorMap = new Map([
+const teamsColorMap = new Map([
   [TeamID.Gremio, "#00BFFF"],
   [TeamID.Internacional, "#FF0000"],
   [TeamID.AtleticoMG, "#C9B037"],
@@ -36,4 +36,22 @@ export const teamsColorMap = new Map([
 
 export function teamIdToColor(id: number | string) {
   return teamsColorMap.get(Number(id)) ?? "#000000";
+}
+
+const championshipNameMap = new Map([
+  [ChampionshipID.Gaucho, "Campeonato Gaúcho"],
+  [ChampionshipID.Carioca, "Campeonato Carioca"],
+  [ChampionshipID.Mineiro, "Campeonato Mineiro"],
+  [ChampionshipID.Paulista, "Campeonato Paulista"],
+  [ChampionshipID.BrazilianCup, "Copa do Brasil"],
+  [ChampionshipID.BrazilianLeague, "Campeonato Brasileiro"],
+  [ChampionshipID.BrazilianSuperCup, "Supercopa do Brasil"],
+  [ChampionshipID.Sudamericana, "Copa Sulamericana"],
+  [ChampionshipID.Libertadores, "Copa Libertadores"],
+  [ChampionshipID.Recopa, "Recopa Sulamericana"],
+  [ChampionshipID.WorldCup, "Mundial"],
+]);
+
+export function championshipIdToName(id: number | string) {
+  return championshipNameMap.get(Number(id)) ?? "Unknown";
 }

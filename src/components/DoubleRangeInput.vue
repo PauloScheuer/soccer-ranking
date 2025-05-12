@@ -47,13 +47,13 @@ function handleHigh(e: Event) {
 <style scoped>
 .input-wrapper {
   position: relative;
-  width: 100px;
+  width: 200px;
   height: 100%;
   margin-left: -2px;
 }
 
 .input-item {
-  width: 100px;
+  width: 200px;
   position: absolute;
   appearance: none;
   -webkit-appearance: none;

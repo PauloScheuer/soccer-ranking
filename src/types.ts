@@ -12,3 +12,17 @@ export enum TeamID {
   Corinthians,
   Santos,
 }
+
+export enum ChampionshipID {
+  Gaucho,
+  Carioca,
+  Mineiro,
+  Paulista,
+  BrazilianCup,
+  BrazilianLeague,
+  BrazilianSuperCup,
+  Sudamericana,
+  Libertadores,
+  Recopa,
+  WorldCup,
+}

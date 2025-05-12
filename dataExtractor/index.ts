@@ -23,7 +23,7 @@ enum ChampionshipID {
   WorldCup,
 }
 
-export enum TeamID {
+enum TeamID {
   Gremio,
   Internacional,
   AtleticoMG,
