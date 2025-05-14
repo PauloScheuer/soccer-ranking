@@ -1,4 +1,4 @@
-import { TeamID, ChampionshipID } from "./types";
+import { TeamID, EventID } from "./types";
 
 const teamsNameMap = new Map([
   [TeamID.Gremio, "Grêmio"],
@@ -38,20 +38,23 @@ export function teamIdToColor(id: number | string) {
   return teamsColorMap.get(Number(id)) ?? "#000000";
 }
 
-const championshipNameMap = new Map([
-  [ChampionshipID.Gaucho, "Campeonato Gaúcho"],
-  [ChampionshipID.Carioca, "Campeonato Carioca"],
-  [ChampionshipID.Mineiro, "Campeonato Mineiro"],
-  [ChampionshipID.Paulista, "Campeonato Paulista"],
-  [ChampionshipID.BrazilianCup, "Copa do Brasil"],
-  [ChampionshipID.BrazilianLeague, "Campeonato Brasileiro"],
-  [ChampionshipID.BrazilianSuperCup, "Supercopa do Brasil"],
-  [ChampionshipID.Sudamericana, "Copa Sulamericana"],
-  [ChampionshipID.Libertadores, "Copa Libertadores"],
-  [ChampionshipID.Recopa, "Recopa Sulamericana"],
-  [ChampionshipID.WorldCup, "Mundial"],
+const eventNameMap = new Map([
+  [EventID.Gaucho, "Campeonato Gaúcho"],
+  [EventID.Carioca, "Campeonato Carioca"],
+  [EventID.Mineiro, "Campeonato Mineiro"],
+  [EventID.Paulista, "Campeonato Paulista"],
+  [EventID.BrazilianCup, "Copa do Brasil"],
+  [EventID.BrazilianLeague, "Campeonato Brasileiro"],
+  [EventID.BrazilianSuperCup, "Supercopa do Brasil"],
+  [EventID.Sudamericana, "Copa Sulamericana"],
+  [EventID.Libertadores, "Copa Libertadores"],
+  [EventID.Recopa, "Recopa Sulamericana"],
+  [EventID.WorldCup, "Mundial"],
+  [EventID.Relegation1, "Relegation to 2nd"],
+  [EventID.Relegation2, "Relegation to 3rd"],
+  [EventID.FailedPromotion, "Failed promotion"],
 ]);
 
-export function championshipIdToName(id: number | string) {
-  return championshipNameMap.get(Number(id)) ?? "Unknown";
+export function eventIdToName(id: number | string) {
+  return eventNameMap.get(Number(id)) ?? "Unknown";
 }

@@ -13,7 +13,7 @@ export enum TeamID {
   Santos,
 }
 
-export enum ChampionshipID {
+export enum EventID {
   Gaucho,
   Carioca,
   Mineiro,
@@ -25,4 +25,7 @@ export enum ChampionshipID {
   Libertadores,
   Recopa,
   WorldCup,
+  Relegation1,
+  Relegation2,
+  FailedPromotion,
 }

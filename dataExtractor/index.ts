@@ -1,15 +1,14 @@
 import fs from "fs";
 
-type Championship = {
-  id: ChampionshipID;
-  name: string;
+type Event = {
+  id: EventID;
   file: string;
   level: Level;
 };
 
-type Titles = Record<number, ChampionshipID[]>;
+type Titles = Record<number, EventID[]>;
 
-enum ChampionshipID {
+enum EventID {
   Gaucho,
   Carioca,
   Mineiro,
@@ -21,6 +20,9 @@ enum ChampionshipID {
   Libertadores,
   Recopa,
   WorldCup,
+  Relegation1,
+  Relegation2,
+  FailedPromotion,
 }
 
 enum TeamID {
@@ -43,74 +45,79 @@ enum Level {
   National,
   Continental,
   World,
+  Bad,
 }
 
-const championships: Championship[] = [
+const events: Event[] = [
   {
-    id: ChampionshipID.Gaucho,
-    name: "Gaúcho",
+    id: EventID.Gaucho,
     file: "gaucho.txt",
     level: Level.Regional,
   },
   {
-    id: ChampionshipID.Carioca,
-    name: "Carioca",
+    id: EventID.Carioca,
     file: "carioca.txt",
     level: Level.Regional,
   },
   {
-    id: ChampionshipID.Mineiro,
-    name: "Mineiro",
+    id: EventID.Mineiro,
     file: "mineiro.txt",
     level: Level.Regional,
   },
   {
-    id: ChampionshipID.Paulista,
-    name: "Paulista",
+    id: EventID.Paulista,
     file: "paulista.txt",
     level: Level.Regional,
   },
   {
-    id: ChampionshipID.BrazilianCup,
-    name: "Copa do Brasil",
+    id: EventID.BrazilianCup,
     file: "brazilian_cup.txt",
     level: Level.National,
   },
   {
-    id: ChampionshipID.BrazilianLeague,
-    name: "Brasileirão",
+    id: EventID.BrazilianLeague,
     file: "brazilian_league.txt",
     level: Level.National,
   },
   {
-    id: ChampionshipID.BrazilianSuperCup,
-    name: "Supercopa do Brasil",
+    id: EventID.BrazilianSuperCup,
     file: "supercup.txt",
     level: Level.National,
   },
   {
-    id: ChampionshipID.Sudamericana,
-    name: "Copa Sulamericana",
+    id: EventID.Sudamericana,
     file: "sudamericana.txt",
     level: Level.Continental,
   },
   {
-    id: ChampionshipID.Libertadores,
-    name: "Copa Libertadores",
+    id: EventID.Libertadores,
     file: "libertadores.txt",
     level: Level.Continental,
   },
   {
-    id: ChampionshipID.Recopa,
-    name: "Recopa Sulamericana",
+    id: EventID.Recopa,
     file: "recopa.txt",
     level: Level.Continental,
   },
   {
-    id: ChampionshipID.WorldCup,
-    name: "Mundial",
+    id: EventID.WorldCup,
     file: "world_cup.txt",
     level: Level.World,
+  },
+  {
+    id: EventID.Relegation1,
+    file: "relegation1.txt",
+    level: Level.Bad,
+  },
+  {
+    id: EventID.Relegation2,
+    file: "relegation2.txt",
+    level: Level.Bad,
+  },
+  {
+    id: EventID.FailedPromotion,
+    file: "failed_promotion.txt",
+    level: Level.Bad,
   },
 ];
 
@@ -131,8 +138,8 @@ const teamsIdMap = new Map([
 
 const teams: Record<number, Titles> = {};
 
-championships.forEach((championship) => {
-  const data = fs.readFileSync("sources/" + championship.file, "utf-8");
+events.forEach((event) => {
+  const data = fs.readFileSync("sources/" + event.file, "utf-8");
   const lines = data.split("\r\n");
   lines.forEach((line) => {
     const [_year, _team] = line.split("\t");
@@ -148,7 +155,7 @@ championships.forEach((championship) => {
     const titles: Titles = teams[teamId] ?? {};
     const yearTitles = titles[Number(year)] ?? [];
 
-    yearTitles.push(championship.id);
+    yearTitles.push(event.id);
 
     titles[Number(year)] = yearTitles;
     teams[teamId] = titles;

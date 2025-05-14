@@ -30,10 +30,19 @@
             <span class="config-label">Championship weights:</span>
             <div v-for="championship in config.championships" class="weight-field">
               <span>{{
-                championshipIdToName(championship.id) }}:</span>
+                eventIdToName(championship.id) }}:</span>
               <input type="number" min="0" v-model="championship.weight" class="weight-input" />
             </div>
             <span class="config-button" @click="config.championships.forEach(item => item.weight = 1)">Reset all</span>
+          </div>
+          <div class="config-field">
+            <span class="config-label">Setback weights:</span>
+            <div v-for="setback in config.setbacks" class="weight-field">
+              <span>{{
+                eventIdToName(setback.id) }}:</span>
+              <input type="number" min="0" v-model="setback.weight" class="weight-input" />
+            </div>
+            <span class="config-button" @click="config.setbacks.forEach(item => item.weight = 0)">Reset all</span>
           </div>
           <div class="config-field">
             <span class="config-label">Actions:</span>
@@ -71,8 +80,8 @@ import DoubleRangeInput from '../components/DoubleRangeInput.vue';
 import { computed, onMounted, ref } from 'vue';
 import VueFeather from 'vue-feather';
 import data from '../../dataExtractor/data.json';
-import { championshipIdToName, teamIdToColor, teamIdToName } from '../utils';
-import { ChampionshipID, TeamID } from '../types';
+import { eventIdToName, teamIdToColor, teamIdToName } from '../utils';
+import { EventID, TeamID } from '../types';
 import Collapsable from '../components/Collapsable.vue';
 
 const minYear = 1906;
@@ -101,17 +110,22 @@ const config = ref({
     { id: TeamID.Santos, consider: true },
   ],
   championships: [
-    { id: ChampionshipID.Gaucho, weight: 1 },
-    { id: ChampionshipID.Carioca, weight: 1 },
-    { id: ChampionshipID.Mineiro, weight: 1 },
-    { id: ChampionshipID.Paulista, weight: 1 },
-    { id: ChampionshipID.BrazilianCup, weight: 1 },
-    { id: ChampionshipID.BrazilianLeague, weight: 1 },
-    { id: ChampionshipID.BrazilianSuperCup, weight: 1 },
-    { id: ChampionshipID.Sudamericana, weight: 1 },
-    { id: ChampionshipID.Libertadores, weight: 1 },
-    { id: ChampionshipID.Recopa, weight: 1 },
-    { id: ChampionshipID.WorldCup, weight: 1 },
+    { id: EventID.Gaucho, weight: 1 },
+    { id: EventID.Carioca, weight: 1 },
+    { id: EventID.Mineiro, weight: 1 },
+    { id: EventID.Paulista, weight: 1 },
+    { id: EventID.BrazilianCup, weight: 1 },
+    { id: EventID.BrazilianLeague, weight: 1 },
+    { id: EventID.BrazilianSuperCup, weight: 1 },
+    { id: EventID.Sudamericana, weight: 1 },
+    { id: EventID.Libertadores, weight: 1 },
+    { id: EventID.Recopa, weight: 1 },
+    { id: EventID.WorldCup, weight: 1 },
+  ],
+  setbacks: [
+    { id: EventID.Relegation1, weight: 0 },
+    { id: EventID.Relegation2, weight: 0 },
+    { id: EventID.FailedPromotion, weight: 0 },
   ]
 });
 
@@ -158,7 +172,7 @@ function computeData() {
     for (let year = config.value.start; year <= config.value.end; year++) {
       const pastTitles = accTitles.at(-1)?.[1] ?? 0;
       const curTitles = titles[year]?.reduce((acc, cur) => {
-        const weight = config.value.championships.find(el => el.id === cur)?.weight ?? 1;
+        const weight = [...config.value.championships, ...config.value.setbacks].find(el => el.id === cur)?.weight ?? 1;
         return acc + weight;
       }, 0) ?? 0;
       const total = curTitles + pastTitles;
@@ -370,8 +384,9 @@ async function stopAnimation() {
 .ranking-config {
   border-radius: 8px;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
   gap: 10px;
   flex-wrap: wrap;
   background-color: white;
@@ -463,12 +478,12 @@ async function stopAnimation() {
 
 .config-header {
   background-color: white;
-  width: 100%;
   padding: 8px;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
   font-weight: bold;
+  gap: 20px
 }
 
 .config-icon {

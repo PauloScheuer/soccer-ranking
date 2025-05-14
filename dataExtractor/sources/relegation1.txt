@@ -1,0 +1,18 @@
+1991	Grêmio
+1997	Fluminense
+2002	Botafogo
+2002	Palmeiras
+2004	Grêmio
+2005	Atlético Mineiro
+2007	Corinthians
+2008	Vasco da Gama
+2012	Palmeiras
+2013	Vasco da Gama
+2014	Botafogo
+2015	Vasco da Gama
+2016	Internacional
+2019	Cruzeiro
+2020	Vasco da Gama
+2021	Grêmio
+2020	Botafogo
+2023	Santos
