@@ -49,19 +49,28 @@
             <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</span>
             <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</span>
             <template v-if="animating">
-              <span class="config-button" @click="animationStep(-1)"
+              <button class="config-button" @click="animationStep(-1)"
                 :class="(animationRunning || !canStep) && 'disabled'">
                 <VueFeather type="skip-back" size="16" />
-              </span>
-              <span class="config-button" @click="stopAnimation()">
+              </button>
+              <button class="config-button" @click="stopAnimation()">
                 <VueFeather type="stop-circle" size="16" />
-              </span>
-              <span class="config-button" @click="animationRunning = !animationRunning">
+              </button>
+              <button class="config-button" @click="animationRunning = !animationRunning">
                 <VueFeather :type="animationRunning ? 'pause-circle' : 'play-circle'" size="16" />
-              </span>
-              <span class="config-button" @click="animationStep(1)"
+              </button>
+              <button class="config-button" @click="animationStep(1)"
                 :class="(animationRunning || !canStep) && 'disabled'">
                 <VueFeather type="skip-forward" size="16" />
+              </button>
+              <button class="config-button" @click="animationSpeed(0.8)">
+                <VueFeather type="rewind" size="16" />
+              </button>
+              <button class="config-button" @click="animationSpeed(1.2)">
+                <VueFeather type="fast-forward" size="16" />
+              </button>
+              <span>
+                {{ (speed).toFixed(2) }}x
               </span>
             </template>
           </div>
@@ -325,8 +334,17 @@ function animationStep(value: number) {
   curAnimationYear.value = Math.max(newIndex, 0);
 }
 
+const speed = ref(1);
+function animationSpeed(value: number) {
+  speed.value *= value;
+}
+
 async function animationLoop() {
-  curAnimationYear.value = config.value.start;
+  speed.value = 1;
+
+  const firstYears = Object.values(rankingItems.value).map(item => Object.entries(item).find(([, value]) => value > 0)?.[0]).sort();
+  curAnimationYear.value = firstYears?.[0] ? Number(firstYears[0]) : config.value.start;
+
   while (curAnimationYear.value < config.value.end) {
     curAnimationYear.value = await canRunAnimation();
     curYear.value = curAnimationYear.value;
@@ -338,7 +356,7 @@ async function animationLoop() {
 
     draw(curAnimationYear.value);
 
-    await new Promise(res => setTimeout(res, 1000));
+    await new Promise(res => setTimeout(res, 1000 / speed.value));
   }
 }
 
