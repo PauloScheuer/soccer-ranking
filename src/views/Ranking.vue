@@ -225,12 +225,24 @@ function resizeCanvas() {
 }
 
 const mImages = new Map<number, HTMLImageElement>();
-onMounted(() => {
+let loaded = 0;
+
+function loadIcons() {
   config.value.clubs.forEach(club => {
     const img = new Image();
     img.src = `icons/${club.id}.png`;
-    mImages.set(club.id, img)
+    img.onload = () => {
+      loaded++;
+      if (loaded === config.value.clubs.length && !animating.value) {
+        draw(curYear.value)
+      }
+    }
+    mImages.set(club.id, img);
   })
+}
+
+onMounted(() => {
+  loadIcons();
   resizeCanvas();
   computeData();
   draw(curYear.value)
