@@ -97,6 +97,9 @@
     </Collapsable>
     <div class="ranking-container">
       <span>{{ config.start }} - {{ curYear }}</span>
+      <div class="loading-container" v-if="loading">
+        <Spinner />
+      </div>
       <canvas ref="rankingCanvas" class="ranking-canvas" :width="chartWidth" :height="chartHeight">
       </canvas>
     </div>
@@ -104,12 +107,13 @@
 </template>
 <script setup lang="ts">
 import DoubleRangeInput from '../components/DoubleRangeInput.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import VueFeather from 'vue-feather';
 import data from '../../dataExtractor/data.json';
 import { eventIdToName, teamIdToColor, teamIdToName } from '../utils';
 import { EventID, TeamID } from '../types';
 import Collapsable from '../components/Collapsable.vue';
+import Spinner from '../components/Spinner.vue';
 
 const minYear = 1906;
 const maxYear = 2024;
@@ -160,6 +164,7 @@ const isConfigOpen = ref(false);
 
 const curYear = ref(maxYear);
 
+const loading = ref(false);
 const animating = ref(false);
 const animationRunning = ref(false);
 
@@ -228,12 +233,16 @@ const mImages = new Map<number, HTMLImageElement>();
 let loaded = 0;
 
 function loadIcons() {
+  loading.value = true;
   config.value.clubs.forEach(club => {
     const img = new Image();
     img.src = `icons/${club.id}.png`;
-    img.onload = () => {
+    img.onload = async () => {
       loaded++;
       if (loaded === config.value.clubs.length && !animating.value) {
+        await new Promise(res => setTimeout(res, 500));
+        loading.value = false;
+        resizeCanvas();
         draw(curYear.value)
       }
     }
@@ -241,15 +250,16 @@ function loadIcons() {
   })
 }
 
-onMounted(() => {
-  loadIcons();
-  resizeCanvas();
-  computeData();
-  draw(curYear.value)
+onBeforeMount(() => {
   window.addEventListener('resize', () => {
     resizeCanvas()
     draw(curYear.value)
   });
+})
+
+onMounted(() => {
+  computeData();
+  loadIcons();
 });
 
 const N_QTY_ENTITIES = 12;
@@ -565,5 +575,13 @@ async function stopAnimation() {
 
 .config-icon {
   cursor: pointer;
+}
+
+.loading-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
 }
 </style>
