@@ -252,7 +252,7 @@ function loadIcons() {
 
 onBeforeMount(() => {
   window.addEventListener('resize', () => {
-    resizeCanvas()
+    resizeCanvas();
     draw(curYear.value)
   });
 })
@@ -266,7 +266,7 @@ const N_QTY_ENTITIES = 12;
 
 async function draw(year: number) {
   const ctx = rankingCanvas.value?.getContext('2d');
-  if (!ctx) {
+  if (!ctx || loading.value) {
     return;
   }
 
