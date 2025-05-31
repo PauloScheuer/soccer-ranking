@@ -19,60 +19,78 @@
           </div>
           <div class="config-field">
             <span class="config-label">Considered clubs:</span>
-            <span v-for="team in config.clubs" class="config-button" :class="!team.consider && 'unconsider'"
-              @click="team.consider = !team.consider">{{
-                teamIdToName(team.id) }}</span>
-            <span class="config-button" @click="config.clubs.forEach(item => item.consider = true)">Consider all</span>
-            <span class="config-button" @click="config.clubs.forEach(item => item.consider = false)">Unconsider
-              all</span>
+            <div class="config-options">
+              <button v-for="team in config.clubs" class="config-button consider"
+                :class="!team.consider && 'unconsider'" @click="team.consider = !team.consider">{{
+                  teamIdToName(team.id) }}</button>
+
+            </div>
+            <div class="config-options"> <button class="config-button"
+                @click="config.clubs.forEach(item => item.consider = true)">Consider
+                all</button>
+              <button class="config-button" @click="config.clubs.forEach(item => item.consider = false)">Unconsider
+                all</button>
+            </div>
           </div>
           <div class="config-field">
             <span class="config-label">Championship weights:</span>
-            <div v-for="championship in config.championships" class="weight-field">
-              <span>{{
-                eventIdToName(championship.id) }}:</span>
-              <input type="number" min="0" v-model="championship.weight" class="weight-input" />
+            <div class="config-options">
+              <div v-for="championship in config.championships" class="weight-field">
+                <span>{{
+                  eventIdToName(championship.id) }}:</span>
+                <input type="number" min="0" v-model="championship.weight" class="weight-input" />
+              </div>
             </div>
-            <span class="config-button" @click="config.championships.forEach(item => item.weight = 1)">Reset all</span>
+
+            <div class="config-options">
+              <button class="config-button" @click="config.championships.forEach(item => item.weight = 1)">Reset
+                all</button>
+            </div>
           </div>
           <div class="config-field">
             <span class="config-label">Setback weights:</span>
-            <div v-for="setback in config.setbacks" class="weight-field">
-              <span>{{
-                eventIdToName(setback.id) }}:</span>
-              <input type="number" min="0" v-model="setback.weight" class="weight-input" />
+            <div class="config-options">
+              <div v-for="setback in config.setbacks" class="weight-field">
+                <span>{{
+                  eventIdToName(setback.id) }}:</span>
+                <input type="number" min="0" v-model="setback.weight" class="weight-input" />
+              </div>
+
             </div>
-            <span class="config-button" @click="config.setbacks.forEach(item => item.weight = 0)">Reset all</span>
+            <div class="config-options"><button class="config-button"
+                @click="config.setbacks.forEach(item => item.weight = 0)">Reset all</button></div>
           </div>
           <div class="config-field">
             <span class="config-label">Actions:</span>
-            <span class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</span>
-            <span class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</span>
-            <template v-if="animating">
-              <button class="config-button" @click="animationStep(-1)"
-                :class="(animationRunning || !canStep) && 'disabled'">
-                <VueFeather type="skip-back" size="16" />
-              </button>
-              <button class="config-button" @click="stopAnimation()">
-                <VueFeather type="stop-circle" size="16" />
-              </button>
-              <button class="config-button" @click="animationRunning = !animationRunning">
-                <VueFeather :type="animationRunning ? 'pause-circle' : 'play-circle'" size="16" />
-              </button>
-              <button class="config-button" @click="animationStep(1)"
-                :class="(animationRunning || !canStep) && 'disabled'">
-                <VueFeather type="skip-forward" size="16" />
-              </button>
-              <button class="config-button" @click="animationSpeed(0.8)">
-                <VueFeather type="rewind" size="16" />
-              </button>
-              <button class="config-button" @click="animationSpeed(1.2)">
-                <VueFeather type="fast-forward" size="16" />
-              </button>
-              <span>
-                {{ (speed).toFixed(2) }}x
-              </span>
-            </template>
+            <div class="config-options">
+              <button class="config-button" :class="actionsDisabled && 'disabled'" @click="create">Check</button>
+              <button class="config-button" :class="actionsDisabled && 'disabled'" @click="animate">Animate</button>
+              <template v-if="animating">
+                <button class="config-button" @click="animationStep(-1)"
+                  :class="(animationRunning || !canStep) && 'disabled'">
+                  <VueFeather type="skip-back" size="16" />
+                </button>
+                <button class="config-button" @click="stopAnimation()">
+                  <VueFeather type="stop-circle" size="16" />
+                </button>
+                <button class="config-button" @click="animationRunning = !animationRunning">
+                  <VueFeather :type="animationRunning ? 'pause-circle' : 'play-circle'" size="16" />
+                </button>
+                <button class="config-button" @click="animationStep(1)"
+                  :class="(animationRunning || !canStep) && 'disabled'">
+                  <VueFeather type="skip-forward" size="16" />
+                </button>
+                <button class="config-button" @click="animationSpeed(0.5)">
+                  <VueFeather type="rewind" size="16" />
+                </button>
+                <button class="config-button" @click="animationSpeed(2)">
+                  <VueFeather type="fast-forward" size="16" />
+                </button>
+                <span>
+                  {{ (speed).toFixed(2) }}x
+                </span>
+              </template>
+            </div>
           </div>
         </div>
       </template>
@@ -206,7 +224,13 @@ function resizeCanvas() {
   }
 }
 
+const mImages = new Map<number, HTMLImageElement>();
 onMounted(() => {
+  config.value.clubs.forEach(club => {
+    const img = new Image();
+    img.src = `icons/${club.id}.png`;
+    mImages.set(club.id, img)
+  })
   resizeCanvas();
   computeData();
   draw(curYear.value)
@@ -275,14 +299,25 @@ function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: n
   const label = `${(teamIdToName(Number(item._id)))}`;
 
   //draw identifier
-  const maxNameWidth = 140;
+  const maxNameWidth = 180;
+  const imgSize = 40;
 
   ctx.font = '16px "Source Sans 3"';
   ctx.textBaseline = 'middle'
   const nameWidth = ctx.measureText(label).width;
   ctx.fillStyle = '#000';
   const textY = personHeight * (i + 0.5);
-  ctx.fillText(label, maxNameWidth - nameWidth, textY, maxNameWidth);
+  ctx.fillText(label, maxNameWidth - nameWidth - imgSize - paddingX, textY, maxNameWidth);
+
+  //draw icon
+  const img = mImages.get(Number(item._id));
+  if (img) {
+    const baseY = personHeight * i;
+    const imgWidth = imgSize * img.naturalWidth / img.naturalHeight;
+    const baseX = maxNameWidth - imgSize
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, baseX + (imgSize - imgWidth) / 2, baseY + (personHeight - imgSize) / 2, imgWidth, imgSize)
+  }
 
   //draw bar
   const maxWidth = width - maxNameWidth - 20 - paddingX * 4;
@@ -336,7 +371,7 @@ function animationStep(value: number) {
 
 const speed = ref(1);
 function animationSpeed(value: number) {
-  speed.value *= value;
+  speed.value = Math.min(Math.max(speed.value * value, 0.5), 2);
 }
 
 async function animationLoop() {
@@ -392,7 +427,6 @@ async function stopAnimation() {
 
 .ranking-container {
   height: fit-content;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -409,6 +443,7 @@ async function stopAnimation() {
   flex-wrap: wrap;
   background-color: white;
   padding: 10px;
+  font-size: 12px;
 }
 
 .ranking-text {
@@ -429,10 +464,7 @@ async function stopAnimation() {
 .config-field {
   display: flex;
   gap: 10px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  background-color: white;
+  flex-direction: column;
   padding: 8px;
   border-radius: 5px;
 }
@@ -440,30 +472,39 @@ async function stopAnimation() {
 .weight-field {
   display: flex;
   gap: 10px;
-  border-radius: 5px;
   padding: 4px 8px;
   align-items: center;
-  background-color: #6B3FA0;
-  color: white;
+  border-radius: 5px;
+  background-color: #f2f2f2;
 }
 
 .weight-input {
   all: unset;
   width: 60px;
   font: inherit;
-  /* Inherit font from parent */
   color: black;
   background: none;
   border: none;
   outline: none;
   box-sizing: border-box;
-  background-color: #f2f2f2;
   padding: 4px;
-  border-radius: 5px;
   text-align: center;
+  border-bottom: 2px solid #404040;
 }
 
-.config-label {}
+.config-label {
+  font-weight: 600;
+}
+
+.config-options {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  background-color: white;
+  border-radius: 5px;
+}
 
 .config-button {
   display: flex;
@@ -472,7 +513,7 @@ async function stopAnimation() {
   padding: 8px;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #6B3FA0;
+  background-color: #404040;
   color: white;
 }
 
@@ -490,8 +531,14 @@ async function stopAnimation() {
   cursor: auto;
 }
 
+.consider {
+  background-color: #f2f2f2;
+  color: black;
+  border: 2px dashed #404040;
+}
+
 .unconsider {
-  opacity: 0.2;
+  border: 2px solid #f2f2f2;
 }
 
 .config-header {

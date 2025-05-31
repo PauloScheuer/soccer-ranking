@@ -46,12 +46,12 @@ const eventNameMap = new Map([
   [EventID.BrazilianCup, "Copa do Brasil"],
   [EventID.BrazilianLeague, "Campeonato Brasileiro"],
   [EventID.BrazilianSuperCup, "Supercopa do Brasil"],
-  [EventID.Sudamericana, "Copa Sulamericana"],
+  [EventID.Sudamericana, "Copa Sudamericana"],
   [EventID.Libertadores, "Copa Libertadores"],
-  [EventID.Recopa, "Recopa Sulamericana"],
-  [EventID.WorldCup, "Mundial"],
-  [EventID.Relegation1, "Relegation to 2nd"],
-  [EventID.Relegation2, "Relegation to 3rd"],
+  [EventID.Recopa, "Recopa Sudamericana"],
+  [EventID.WorldCup, "World Cup"],
+  [EventID.Relegation1, "Relegation to 2nd division"],
+  [EventID.Relegation2, "Relegation to 3rd division"],
   [EventID.FailedPromotion, "Failed promotion"],
 ]);
 

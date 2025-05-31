@@ -48,7 +48,7 @@ function handleHigh(e: Event) {
 .input-wrapper {
   position: relative;
   width: 200px;
-  height: 100%;
+  height: 1px;
   margin-left: -2px;
 }
 
@@ -76,7 +76,7 @@ function handleHigh(e: Event) {
   -webkit-appearance: none;
   appearance: none;
   margin-top: -7px;
-  background-color: #6B3FA0;
+  background-color: #404040;
   height: 10px;
   width: 10px;
   border-radius: 50%;
