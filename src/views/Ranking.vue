@@ -100,7 +100,7 @@
       <div class="loading-container" v-if="loading">
         <Spinner />
       </div>
-      <canvas ref="rankingCanvas" class="ranking-canvas" :width="chartWidth" :height="chartHeight">
+      <canvas ref="rankingCanvas" class="ranking-canvas">
       </canvas>
     </div>
   </div>
@@ -117,9 +117,6 @@ import Spinner from '../components/Spinner.vue';
 
 const minYear = 1906;
 const maxYear = 2024;
-
-const chartWidth = ref(0);
-const chartHeight = ref(0);
 
 const rankingCanvas = ref(null as HTMLCanvasElement | null);
 
@@ -220,13 +217,23 @@ function computeData() {
 
 function resizeCanvas() {
   if (rankingCanvas.value) {
-    const sizes = rankingCanvas.value.getBoundingClientRect();
-    chartWidth.value = sizes.width * devicePixelRatio;
-    chartHeight.value = sizes.height * devicePixelRatio;
+    rankingCanvas.value.width = rankingCanvas.value.clientWidth * devicePixelRatio;
+    rankingCanvas.value.height = rankingCanvas.value.clientHeight * devicePixelRatio;
 
-    const ctx = rankingCanvas.value?.getContext('2d');
-    ctx?.scale(devicePixelRatio, devicePixelRatio);
+    const ctx = rankingCanvas.value.getContext('2d');
+    if (ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
   }
+}
+
+function getCanvasWidth() {
+  return rankingCanvas.value?.clientWidth ?? 0
+}
+
+function getCanvasHeight() {
+  return rankingCanvas.value?.clientHeight ?? 0
 }
 
 const mImages = new Map<number, HTMLImageElement>();
@@ -272,8 +279,8 @@ async function draw(year: number) {
 
   ctx.save();
 
-  const width = chartWidth.value;
-  const height = chartHeight.value;
+  const width = getCanvasWidth();
+  const height = getCanvasHeight();
 
   const items: { _id: string, pos: number, total: number }[] = Object.entries(rankingItems.value).map(([team, titles]) => {
     return { _id: team, pos: year, total: titles[year] ?? 0 }
@@ -315,8 +322,8 @@ async function draw(year: number) {
 function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxTotal: number) {
   const paddingY = 4;
   const paddingX = 10;
-  const personHeight = chartHeight.value / N_QTY_ENTITIES;
-  const width = chartWidth.value;
+  const personHeight = getCanvasHeight() / N_QTY_ENTITIES;
+  const width = getCanvasWidth();
 
   const label = `${(teamIdToName(Number(item._id)))}`;
 
