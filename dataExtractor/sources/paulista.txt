@@ -45,10 +45,10 @@
 1935	Portuguesa
 1936	Palmeiras
 1936	Portuguesa
-1937	LFP	Corinthians
-1938	LFESP	Corinthians
-1939	LFESP	Corinthians
-1940	LFESP	Palmeiras
+1937	Corinthians
+1938	Corinthians
+1939	Corinthians
+1940	Palmeiras
 1941	Corinthians
 1942	Palmeiras
 1943	São Paulo
@@ -133,4 +133,5 @@
 2021	São Paulo
 2022	Palmeiras
 2023	Palmeiras
-2024	Palmeiras 
+2024	Palmeiras
+2025	Corinthians

@@ -116,7 +116,7 @@ import Collapsable from '../components/Collapsable.vue';
 import Spinner from '../components/Spinner.vue';
 
 const minYear = 1906;
-const maxYear = 2024;
+const maxYear = 2025;
 
 const rankingCanvas = ref(null as HTMLCanvasElement | null);
 

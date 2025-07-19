@@ -110,3 +110,4 @@
 2022	Atlético Mineiro
 2023	Atlético Mineiro
 2024	Atlético Mineiro
+2025	Atlético Mineiro
