@@ -45,6 +45,8 @@
             <div class="config-options">
               <button class="config-button" @click="config.championships.forEach(item => item.weight = 1)">Reset
                 all</button>
+              <button class="config-button" @click="config.championships.forEach(item => item.weight = 0)">Zero
+                all</button>
             </div>
           </div>
           <div class="config-field">
@@ -53,7 +55,7 @@
               <div v-for="setback in config.setbacks" class="weight-field">
                 <span>{{
                   eventIdToName(setback.id) }}:</span>
-                <input type="number" min="0" v-model="setback.weight" class="weight-input" />
+                <input type="number" v-model="setback.weight" class="weight-input" />
               </div>
 
             </div>
@@ -286,7 +288,7 @@ async function draw(year: number) {
     return { _id: team, pos: year, total: titles[year] ?? 0 }
   }).sort((a, b) => b.total - a.total);
 
-  const maxTotal = Math.max(...items.map(item => item.total));
+  const maxTotal = Math.max(...items.map(item => Math.max(item.total, 0)));
 
   const countSteps = 20;
   const steps = new Array(countSteps).fill(0).map((_, i) => i + 1);
@@ -302,10 +304,10 @@ async function draw(year: number) {
       const diffPos = lastPos - i;
       const stepIndex = lastPos - diffPos * step / countSteps;
 
-      const curSize = item.total / maxTotal;
+      const curSize = maxTotal !== 0 ? item.total / maxTotal : 0;
       const diffSize = lastSize - curSize;
       const stepSize = lastSize - diffSize * step / countSteps;
-      drawElementAtPos(ctx, item, stepIndex, stepSize, maxTotal);
+      drawElementAtPos(ctx, item, stepIndex, stepSize, maxTotal, item.total);
     });
 
     await new Promise(res => setTimeout(res, 16));
@@ -315,11 +317,11 @@ async function draw(year: number) {
 
   drawStates.clear();
   items.forEach((item, i) => {
-    drawStates.set(item._id, { pos: i, size: item.total / maxTotal });
+    drawStates.set(item._id, { pos: i, size: maxTotal !== 0 ? item.total / maxTotal : 0 });
   })
 }
 
-function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxTotal: number) {
+function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxTotal: number, count: number) {
   const paddingY = 4;
   const paddingX = 10;
   const personHeight = getCanvasHeight() / N_QTY_ENTITIES;
@@ -350,7 +352,7 @@ function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: n
 
   //draw bar
   const maxWidth = width - maxNameWidth - 20 - paddingX * 4;
-  const fixedWidth = maxWidth * total;
+  const fixedWidth = maxWidth * Math.max(total, 0);
   ctx.fillStyle = teamIdToColor(item._id);
   ctx.beginPath();
   ctx.roundRect(maxNameWidth + paddingX, personHeight * i + paddingY, fixedWidth, personHeight - paddingY * 2, 5);
@@ -358,7 +360,7 @@ function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: n
   ctx.closePath();
 
   //draw total
-  ctx.fillText(`${Math.round(total * maxTotal)}`, maxNameWidth + paddingX * 2 + fixedWidth, textY);
+  ctx.fillText(`${Math.round(count)}`, maxNameWidth + paddingX * 2 + fixedWidth, textY);
 }
 
 const curAnimationYear = ref(config.value.start);
