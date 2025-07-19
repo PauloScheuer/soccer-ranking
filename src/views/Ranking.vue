@@ -307,7 +307,7 @@ async function draw(year: number) {
       const curSize = maxTotal !== 0 ? item.total / maxTotal : 0;
       const diffSize = lastSize - curSize;
       const stepSize = lastSize - diffSize * step / countSteps;
-      drawElementAtPos(ctx, item, stepIndex, stepSize, maxTotal, item.total);
+      drawElementAtPos(ctx, item, stepIndex, stepSize, item.total);
     });
 
     await new Promise(res => setTimeout(res, 16));
@@ -321,7 +321,7 @@ async function draw(year: number) {
   })
 }
 
-function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, maxTotal: number, count: number) {
+function drawElementAtPos(ctx: CanvasRenderingContext2D, item: RankingItem, i: number, total: number, count: number) {
   const paddingY = 4;
   const paddingX = 10;
   const personHeight = getCanvasHeight() / N_QTY_ENTITIES;
